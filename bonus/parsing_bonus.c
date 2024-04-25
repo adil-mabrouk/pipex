@@ -1,52 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   parsing_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 00:04:39 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/05 00:15:12 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/23 14:13:38 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "../headers/pipex_bonus.h"
 
-int	ft_strlen_of_2s(char *s1, char *s2)
+int	count_word(char *s, char sep)
 {
-	int	i;
+	int	wc;
 
-	i = 0;
-	while (s1[i])
-		i++;
-	while (*s2 && *s2 != ' ' && *s2 != '\t')
+	wc = 0;
+	while (*s)
 	{
-		s2++;
-		i++;
+		while (*s && *s == sep)
+			s++;
+		if (*s && *s != sep)
+			wc++;
+		while (*s && *s != sep)
+			s++;
 	}
-	return (i);
-}
-
-char	*ft_strjoin(char *s1, char *s2, char sep)
-{
-	char	*joined;
-	int		i;
-	int		len;
-
-	if (!s1 || !s2)
-		return (NULL);
-	len = ft_strlen_of_2s(s1, s2) + 1;
-	joined = malloc(sizeof(char) * len + 1);
-	if (!joined)
-		return (NULL);
-	i = -1;
-	while (s1[++i])
-		joined[i] = s1[i];
-	joined[i] = sep;
-	while (*s2 && *s2 != ' ' && *s2 != '\t')
-		joined[++i] = *s2++;
-	joined[++i] = 0;
-	return (joined);
+	return (wc);
 }
 
 char	*fill_word(char *s, char sep, int *i)
@@ -69,6 +49,7 @@ char	*fill_word(char *s, char sep, int *i)
 		copy[j] = s[start + j];
 		j++;
 	}
+	copy[j++] = '/';
 	copy[j] = 0;
 	return (copy);
 }
@@ -82,13 +63,13 @@ char	**ft_split(char *s, char sep)
 
 	if (!s)
 		return (NULL);
-	wc = word_count(s, sep);
-	res = (char **)malloc(sizeof(char *) * 9);
+	wc = count_word(s, sep);
+	res = (char **)malloc(sizeof(char *) * (wc + 1));
 	if (!res)
 		return (NULL);
 	k = 0;
 	i = 0;
-	while (k < 8)
+	while (k < wc)
 	{
 		res[k] = fill_word(s, sep, &i);
 		if (!res[k])
@@ -117,25 +98,30 @@ char	*ft_strstr(char **env, char *find)
 	return (NULL);
 }
 
-char	*ft_parsing(t_args arg, char *av, char **env)
+char	**ft_parsing(t_data *arg, char *av, char **env)
 {
 	char	*s;
+	char	**cmd;
 	char	**path;
 	char	*joined;
-	char	*command;
 	int		i;
 
 	i = 0;
+	cmd = split_option(av);
 	s = ft_strstr(env, "PATH=");
 	path = ft_split(s, ':');
-	command = ft_split(av[2], ' ');
 	while (path[i])
 	{
-		joined = ft_strjoin(path[i], command[0], '/');
+		joined = ft_strjoin(path[i], cmd[0]);
 		if (joined && access(joined, F_OK) == 0)
-			return (ft_free(path), joined);
-		free(joined);
+		{
+				(*arg).path = ft_strdup(joined);
+			// ft_free(path);
+			return (cmd);
+		}
+		// free(joined);
 		i++;
 	}
-	return (ft_free(path), NULL);
+	perror(NULL);
+	return (cmd);
 }

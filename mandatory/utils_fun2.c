@@ -1,37 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   utils_fun2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/29 03:44:38 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/05 00:11:22 by amabrouk         ###   ########.fr       */
+/*   Created: 2024/04/14 16:26:17 by amabrouk          #+#    #+#             */
+/*   Updated: 2024/04/18 11:19:53 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#if !defined(PIPEX_H)
-#define PIPEX_H
+#include "../headers/pipex.h"
 
-#include <unistd.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-
-typedef struct s_args
+void	free_all(t_data arg)
 {
-	char	**cmd1;
-	char	**cmd2;
-	char	*path1;
-	char	*path2;
-	int		fdin;
-	int		fdout;
-}		t_args;
+	free(arg.path1);
+	free(arg.path2);
+	ft_free(arg.cmd1);
+	ft_free(arg.cmd2);
+}
 
-char	*ft_parsing(t_args arg, char *av, char **env);
-char	**ft_split(char *s, char sep);
-void	ft_free(char **s);
+char	*ft_strdup(char *s)
+{
+	char	*copy;
+	int		i;
 
-#endif
+	if (!*s)
+		return (NULL);
+	copy = malloc(sizeof(char) * (ft_strlen_of_2(s, NULL) + 1));
+	if (!copy)
+		return (free(s), NULL);
+	i = 0;
+	while (s[i])
+	{
+		copy[i] = s[i];
+		i++;
+	}
+	copy[i] = 0;
+	return (free(s), copy);
+}
