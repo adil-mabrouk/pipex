@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 03:43:49 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/25 16:49:10 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/26 16:41:22 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,12 @@ void	last_child(t_data arg, char *av, char **env, int *end)
 		perror(NULL);
 }
 
-void	pipex(t_data arg, char **av, char **env, int *end)
+void	pipex(t_data arg, char **av, char **env)
 {
+	int	end[2];
 	int	new_end[2];
 
+	pipe(end);
 	first_child(arg, av[arg.iter++], env, end);
 	close(arg.fdin);
 	close(end[1]);
@@ -83,12 +85,13 @@ void	pipex(t_data arg, char **av, char **env, int *end)
 		pipe(new_end);
 		end[1] = new_end[1];
 		middle_child(arg, av[arg.iter++], env, end);
+		close(new_end[1]);
 		close(end[0]);
 		end[0] = new_end[0];
 	}
 	close(end[1]);
 	last_child(arg, av[arg.iter], env, end);
+	close(arg.fdout);
 	close(end[0]);
-	close(new_end[0]);
 	while (wait(NULL) != -1);
 }

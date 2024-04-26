@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 18:16:26 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/25 15:51:53 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/26 16:44:06 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,9 @@ void	here_doc(t_data *arg, char **av)
 	pipe(end);
 	while (1)
 	{
-		write(2, "1\n", 2);
 		write(1, "heredoc>", 8);
 		line = get_next_line(0);
-		if (line && ft_strcmp_nl(av[2], line) == 0)
+		if (!line || ft_strcmp_nl(av[2], line) == 0)
 			break ;
 		write(end[1], line, ft_strlen(line));
 		free(line);
@@ -45,34 +44,6 @@ void	here_doc(t_data *arg, char **av)
 	arg->fdin = end[0];
 }
 
-// void	here_doc(t_data *arg, char **av)
-// {
-// 	char	*line;
-// 	int		end[2];
-
-// 	pipe(end);
-// 	while (1)
-// 	{
-// 		write(1, "heredoc>", 8);
-// 		line = get_next_line(0);
-// 		if (line && ft_strcmp_nl(av[2], line) == 0)
-// 			break ;
-// 		write(end[1], line, ft_strlen(line));
-// 		free(line);
-// 	}
-// 	free(line);
-// 	close(end[1]);
-// 	arg->fdin = end[0];
-// }
-
-void	ft_handel(t_data *arg, char **av, char **envp)
-{
-	int	end[2];
-	pipe(end);
-	pipex(*arg, av, envp, end);
-	// free_all(*arg);
-}
-
 int main(int ac, char **av, char **envp)
 {
 	t_data	arg;
@@ -80,7 +51,7 @@ int main(int ac, char **av, char **envp)
 	arg = (t_data){0};
 	if (ac >= 5)
 	{
-		if (ft_strcmp(av[1], "here_doc") == 0)
+		if (ac > 5 && ft_strcmp(av[1], "here_doc") == 0)
 		{
 			arg.fdout = ft_open(av[ac - 1], 0);
 			here_doc(&arg, av);
@@ -93,7 +64,8 @@ int main(int ac, char **av, char **envp)
 			arg.iter = 2;
 		}
 		arg.ac = ac;
-		ft_handel(&arg, av, envp);
+		pipex(arg, av, envp);
+		free_all(arg);
 	}
 	else
 		perror(NULL);

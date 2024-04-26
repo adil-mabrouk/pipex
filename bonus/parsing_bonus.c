@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 00:04:39 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/23 14:13:38 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/26 15:29:37 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ char	**ft_parsing(t_data *arg, char *av, char **env)
 	char	*joined;
 	int		i;
 
+	if (av && !av[0])
+		return (NULL);
 	i = 0;
 	cmd = split_option(av);
 	s = ft_strstr(env, "PATH=");

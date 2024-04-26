@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 06:28:00 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/16 18:36:47 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/26 15:24:30 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ char	**split_option(char *s)
 	int		k;
 	int		wc;
 
+	if (!s)
+		return (NULL);
 	wc = word_count(s);
 	res = (char	**)malloc(sizeof(char *) * (wc + 1));
 	if (!res)

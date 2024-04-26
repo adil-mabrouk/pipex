@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 00:04:39 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/23 08:56:14 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/26 17:00:45 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,8 @@ char	**ft_parsing(t_data *arg, char *av, char **env, int *info)
 
 	i = 0;
 	joined = NULL;
+	if (av && !av[0])
+		return (write(2, "error\n", 6), exit(1), NULL);
 	cmd = split_option(av);
 	s = ft_strstr(env, "PATH=");
 	path = ft_split(s, ':');
@@ -163,7 +165,6 @@ char	**ft_parsing(t_data *arg, char *av, char **env, int *info)
 			i++;
 		}
 		free(joined);
-		i++;
 	}
 	return (ft_free(path), cmd);
 }

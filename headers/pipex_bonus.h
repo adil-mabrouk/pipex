@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 19:04:10 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/25 12:10:08 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/26 15:12:34 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_data
 
 # endif
 
-void	pipex(t_data arg, char **av, char **env, int *end);
+void	pipex(t_data arg, char **av, char **env);
 char	**ft_parsing(t_data *arg, char *av, char **env);
 char	**ft_split(char *s, char sep);
 char	**split_option(char *s);

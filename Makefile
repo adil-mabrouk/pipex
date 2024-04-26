@@ -6,7 +6,7 @@
 #    By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/01 16:25:49 by amabrouk          #+#    #+#              #
-#    Updated: 2024/04/25 16:38:38 by amabrouk         ###   ########.fr        #
+#    Updated: 2024/04/26 15:23:45 by amabrouk         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ $(BONUS_NAME) : $(B_OBJ)
 mandatory/%.o : mandatory/%.c headers/pipex.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-bonus/%.o : bonus/%.c headers/pipex.h
+bonus/%.o : bonus/%.c headers/pipex_bonus.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean :

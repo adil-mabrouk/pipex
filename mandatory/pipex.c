@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 03:43:49 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/23 08:41:11 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/04/26 17:09:48 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	first_child(t_data arg, int *end)
 		close(end[1]);
 		close(fd);
 		execve(arg.path1, arg.cmd1, NULL);
-		exit(EXIT_FAILURE);
+		perror("execve");
+    	exit(1);
 	}
 }
 
@@ -42,6 +43,9 @@ void	second_child(t_data arg, int *end)
 		close(end[0]);
 		close(fd);
 		execve(arg.path2, arg.cmd2, NULL);
+		write(2, "cmd not found",13);
+		exit(1);
+
 		exit(EXIT_FAILURE);
 	}
 }
