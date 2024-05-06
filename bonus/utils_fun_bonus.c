@@ -6,17 +6,17 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/02 06:28:00 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/26 15:25:59 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:21:11 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/pipex.h"
+#include "../headers/pipex_bonus.h"
 
 int	word_count(char *s)
 {
 	int	wc;
 	int	i;
-	
+
 	i = 0;
 	wc = 0;
 	while (s[i])
@@ -75,7 +75,7 @@ char	**split_option(char *s)
 	if (!s)
 		return (NULL);
 	wc = word_count(s);
-	res = (char	**)malloc(sizeof(char *) * (wc + 1));
+	res = (char **)malloc(sizeof(char *) * (wc + 1));
 	if (!res)
 		return (NULL);
 	k = 0;

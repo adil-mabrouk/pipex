@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 00:04:39 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/26 15:29:37 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/05/06 16:00:16 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,27 +103,20 @@ char	**ft_parsing(t_data *arg, char *av, char **env)
 	char	*s;
 	char	**cmd;
 	char	**path;
-	char	*joined;
 	int		i;
 
-	if (av && !av[0])
-		return (NULL);
+	if ((av && !av[0]) || is_whitespace(av))
+	{
+		write(2, "\tcommand not found\n", 19);
+		exit(EXIT_FAILURE);
+	}
 	i = 0;
 	cmd = split_option(av);
 	s = ft_strstr(env, "PATH=");
 	path = ft_split(s, ':');
-	while (path[i])
-	{
-		joined = ft_strjoin(path[i], cmd[0]);
-		if (joined && access(joined, F_OK) == 0)
-		{
-				(*arg).path = ft_strdup(joined);
-			// ft_free(path);
-			return (cmd);
-		}
-		// free(joined);
-		i++;
-	}
-	perror(NULL);
-	return (cmd);
+	if (cmd[0][0] == '/' || cmd[0][0] == '.')
+		return ((*arg).path = cmd[0], ft_free(path), cmd);
+	else
+		return (find_path(arg, path, cmd));
+	return (perror(NULL), cmd);
 }

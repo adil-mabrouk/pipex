@@ -6,7 +6,7 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 23:22:49 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/17 16:53:20 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/05/04 15:27:34 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	*ft_strchr(char *str, int c)
 char	*ft_strdup(char	*s)
 {
 	char	*copy;
-	int	i;
+	int		i;
 
 	if (!s)
 		return (NULL);

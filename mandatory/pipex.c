@@ -6,80 +6,94 @@
 /*   By: amabrouk <amabrouk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/29 03:43:49 by amabrouk          #+#    #+#             */
-/*   Updated: 2024/04/26 17:09:48 by amabrouk         ###   ########.fr       */
+/*   Updated: 2024/05/06 16:22:51 by amabrouk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/pipex.h"
 
-void	first_child(t_data arg, int *end)
+void	first_child(t_data arg, char *av, int *end, char **env)
 {
-	int	fd;
+	pid_t	pid;
 
-	if (fork() == 0)
+	pid = fork();
+	if (pid == 0)
 	{
-		fd = open(arg.fdin, O_RDONLY, 0777);
 		close(end[0]);
-		if (dup2(end[1], 1) == -1 || dup2(fd, 0) == -1)
-			(write(2, "\tError in first child\n", 22), exit (EXIT_FAILURE));
+		if (dup2(end[1], 1) == -1 || dup2(arg.fdin, 0) == -1)
+		{
+			write(2, arg.infile, ft_strlen(arg.infile));
+			write(2, ": No such file or directory\n", 28);
+			exit (EXIT_FAILURE);
+		}
 		close(end[1]);
-		close(fd);
-		execve(arg.path1, arg.cmd1, NULL);
-		perror("execve");
-    	exit(1);
-	}
-}
-
-void	second_child(t_data arg, int *end)
-{
-	int	fd;
-
-	if (fork() == 0)
-	{
-		fd = open(arg.fdout, O_CREAT | O_RDWR | O_TRUNC, 0644);
-		close(end[1]);
-		if (dup2(end[0], 0) == -1 || dup2(fd, 1) == -1)
-			(write(2, "\tError in second child\n", 22), exit (EXIT_FAILURE));
-		close(end[0]);
-		close(fd);
-		execve(arg.path2, arg.cmd2, NULL);
-		write(2, "cmd not found",13);
-		exit(1);
-
+		close(arg.fdin);
+		arg.cmd = ft_parsing(&arg, av, env);
+		execve(arg.path, arg.cmd, NULL);
+		write(2, arg.cmd[0], ft_strlen(arg.cmd[0]));
+		write(2, ": command not found\n", 20);
 		exit(EXIT_FAILURE);
 	}
+	else if (pid == -1)
+		perror(NULL);
 }
 
-void	pipex(t_data arg)
+void	second_child(t_data arg, char *av, int *end, char **env)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		close(end[1]);
+		if (dup2(end[0], 0) == -1 || dup2(arg.fdout, 1) == -1)
+		{
+			write(2, arg.outfile, ft_strlen(arg.outfile));
+			write(2, ": No such file or directory\n", 28);
+			exit (EXIT_FAILURE);
+		}
+		close(end[0]);
+		close(arg.fdout);
+		arg.cmd = ft_parsing(&arg, av, env);
+		execve(arg.path, arg.cmd, NULL);
+		write(2, arg.cmd[0], ft_strlen(arg.cmd[0]));
+		write(2, ": command not found\n", 20);
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == -1)
+		perror(NULL);
+}
+
+void	pipex(t_data arg, char **av, char **env)
 {
 	int	end[2];
 
-	pipe(end);
-	first_child(arg, end);
-	second_child(arg, end);
+	if (pipe(end) == -1)
+		perror("pipe error...");
+	first_child(arg, av[2], end, env);
+	close(arg.fdin);
+	second_child(arg, av[3], end, env);
+	close(arg.fdout);
 	close(end[0]);
 	close(end[1]);
-	wait(NULL);
-	wait(NULL);
+	while (wait(NULL) != -1)
+		;
 }
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
 	t_data	arg;
-	int		x;
 
 	if (ac == 5)
 	{
-		x = 1;
-		arg.cmd1 = ft_parsing(&arg, av[2], envp, &x);
-		x = 2;
-		arg.cmd2 = ft_parsing(&arg, av[3], envp, &x);
-		arg.fdin = av[1];
-		arg.fdout = av[4];
-		pipex(arg);
-		free_all(arg);
+		arg.infile = av[1];
+		arg.fdin = open(av[1], O_RDONLY, 0777);
+		arg.outfile = av[4];
+		arg.fdout = open(av[4], O_CREAT | O_RDWR | O_TRUNC, 0777);
+		pipex(arg, av, envp);
+		free(arg.path);
 	}
 	else
-		perror("less arguments");
+		write(2, "wrong number of arguments\n", 26);
 	return (0);
 }
